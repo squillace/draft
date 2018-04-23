@@ -12,4 +12,15 @@ resources:
 ingress:
     enabled: false
 serviceCatalogEnv:
-    - {name: mongo, vars: [connectionString, host, password, port, username]}
+    - name: mongo
+      vars:
+        - name: connection_string
+          value: https://example.com
+        - name: host
+          value: hostname
+        - name: password
+          value: secret
+        - name: port
+          value: 1234
+        - name: username
+          value: user
