@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    draft: {{ default "draft-app" .Values.draft }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      annotations:
+        buildID: {{ .Values.buildID }}
+      labels:
+        draft: {{ default "draft-app" .Values.draft }}
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        - containerPort: 9229
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        env:
+          - name:  MONGODB_URI
+            value:  mongodb://mongodb:27017/webratings
+        env: 
+          {{- range $index, $env :=  .Values.serviceCatalogEnv }}
+              {{- range $var := $env.vars }}
+          - name: {{ printf "%s_%s" (upper $env.name) (upper $var.name)  }}
+            valueFrom:
+              secretKeyRef: 
+                name: {{ $env.name }}
+                key: {{ $var.value }}
+              {{ end }}
+          {{ end }}
+              
