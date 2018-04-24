@@ -10,7 +10,7 @@ const requestHandler = (request, response) => {
 // MONGO_PASSWORD
 // MONGO_PORT
 // MONGO_USERNAME
-  response.end("Hello World, I'm Node.js on AKS in WestEurope! here's mongo " + process.env.MONGO_CONNECTIONSTRING);
+  response.end("Hello World, I'm Node.js on AKS in WestEurope! here's mongo " + process.env.MONGO_CONNECTIONSTRING + "<p>" + process.env.MONGO_HOST + "<p>" + process.env.MONGO_USERNAME + "<p>" + process.env.MONGO_PASSWORD + "<p>" + process.env.MONGO_PORT);
 }
 
 const server = http.createServer(requestHandler);

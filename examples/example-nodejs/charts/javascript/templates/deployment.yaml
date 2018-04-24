@@ -28,11 +28,11 @@ spec:
         env:
 {{- range $index, $value := .Values.serviceCatalogEnv }}
 {{- range $key := $value.vars }}
-          - name: {{ $value.name | upper }}_{{ $value.name | upper }}
+          - name: {{ $value.name | upper }}_{{ . | upper }}
             valuefrom:
               secretKeyRef:
-                name: mongo # {{ $value.name }}
-                key: connectionString # {{ $key }}
+                name: {{ $value.name }}
+                key: {{ . }}
 {{- end }}
 {{- end }}
 {{- end }}
