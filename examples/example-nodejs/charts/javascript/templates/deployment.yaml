@@ -24,17 +24,16 @@ spec:
         - containerPort: 9229
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.serviceCatalogEnv }}
         env:
-          - name:  MONGODB_URI
-            value:  mongodb://mongodb:27017/webratings
-        env: 
-          {{- range $index, $env :=  .Values.serviceCatalogEnv }}
-              {{- range $var := $env.vars }}
-          - name: {{ printf "%s_%s" (upper $env.name) (upper $var.name)  }}
-            valueFrom:
-              secretKeyRef: 
-                name: {{ $env.name }}
-                key: {{ $var.value }}
-              {{ end }}
-          {{ end }}
+{{- range $index, $value := .Values.serviceCatalogEnv }}
+{{- range $key := $value.vars }}
+          - name: {{ $value.name | upper }}_{{ $value.name | upper }}
+            valuefrom:
+              secretKeyRef:
+                name: mongo # {{ $value.name }}
+                key: connectionString # {{ $key }}
+{{- end }}
+{{- end }}
+{{- end }}
               
